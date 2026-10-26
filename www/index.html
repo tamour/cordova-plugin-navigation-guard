@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1, width=device-width, viewport-fit=cover">
+
+    <!-- Strict CSP to eliminate eval() and contain script/frame execution -->
+    <meta http-equiv="Content-Security-Policy" 
+          content="default-src 'self' https://ts11dev.outsystems.net; 
+                   script-src 'self'; 
+                   connect-src 'self' https://ts11dev.outsystems.net; 
+                   style-src 'self' 'unsafe-inline'; 
+                   img-src 'self' data: https:; 
+                   frame-src 'none'; 
+                   object-src 'none';">
+
+    <title>Your App</title>
+    <link rel="stylesheet" href="css/index.css">
+</head>
+<body>
+    <div class="app">
+        <!-- App content -->
+    </div>
+    <script src="cordova.js"></script>
+    <script src="js/index.js"></script>
+</body>
+</html>
