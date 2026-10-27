@@ -12,8 +12,7 @@
     <allow-navigation href="https://ts11dev.outsystems.net/*" />
 
     <!-- 2. Restrict background network calls (Fetch, XHR, WebSockets) -->
-    <access origin="https://api.yourcompany.com" />
-    <access origin="https://app.yourcompany.com" />
+    <access origin="https://ts11dev.outsystems.net" />
 
     <!-- 3. Safe external handoff (Opens Safari/Chrome, NOT the Cordova WebView) -->
     <allow-intent href="tel:*" />

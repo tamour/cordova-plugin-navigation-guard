@@ -1,0 +1,20 @@
+{
+  "name": "cordova-plugin-navigation-guard",
+  "version": "1.0.0",
+  "description": "Enforces native origin containment and URL filtering on Cordova WebViews",
+  "cordova": {
+    "id": "cordova-plugin-navigation-guard",
+    "platforms": [
+      "ios",
+      "android"
+    ]
+  },
+  "keywords": [
+    "ecosystem:cordova",
+    "cordova-ios",
+    "cordova-android",
+    "swift"
+  ],
+  "author": "Tamour Ahmad",
+  "license": "MIT"
+}
