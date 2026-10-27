@@ -25,7 +25,6 @@
                 <param name="ios-package" value="NavigationGuardPlugin" />
                 <param name="onload" value="true" />
             </feature>
-			<preference name="SwiftVersion" value="5.0" />
         </config-file>
         <source-file src="src/ios/NavigationGuardPlugin.swift" />
     </platform>
