@@ -26,6 +26,10 @@ module.exports = function (ctx) {
 
   files.forEach(f => {
     let xml = fs.readFileSync(f, 'utf8');
+    if (/<preference\s+name="OriginLockMode"\s+value="report"/i.test(xml)) {
+      console.log('[originlock] report mode - leaving ' + f + ' untouched');
+      return;
+    }
     xml = xml.replace(/[ \t]*<(allow-navigation|access|allow-intent)\b[^>]*?(\/>|>\s*<\/\1>)[ \t]*\r?\n?/g, '');
     if (REMOVE_UNSAFE_EVAL) {
       xml = xml.replace(/[ \t]*<preference\s+name="UnsafeEvalUsage"[^>]*\/>[ \t]*\r?\n?/gi, '');

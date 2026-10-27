@@ -2,10 +2,13 @@ package com.mycompany.originlock;
 
 import android.net.Uri;
 import android.util.Log;
+import android.widget.Toast;
 
 import org.apache.cordova.CordovaPlugin;
 
 import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.List;
 import java.util.Locale;
 
@@ -20,9 +23,22 @@ public class OriginLock extends CordovaPlugin {
         "https://localhost,http://localhost,https://ts11dev.outsystems.net";
 
     private final List<String[]> allowed = new ArrayList<>(); // {scheme, host, port}
+    private boolean reportOnly = false;
+    private final Set<String> shown = new HashSet<>();
+
+    /** Report mode only: show the URL on screen (max 8 distinct) so no adb is needed. */
+    private void notifyBlocked(final String url) {
+        if (!reportOnly || shown.size() >= 8 || !shown.add(url)) return;
+        cordova.getActivity().runOnUiThread(new Runnable() {
+            public void run() {
+                Toast.makeText(cordova.getActivity(), "OriginLock would block:\n" + url, Toast.LENGTH_LONG).show();
+            }
+        });
+    }
 
     @Override
     protected void pluginInitialize() {
+        reportOnly = "report".equalsIgnoreCase(preferences.getString("OriginLockMode", "enforce"));
         String pref = preferences.getString("OriginLockAllowed", DEFAULT);
         for (String entry : pref.split(",")) {
             entry = entry.trim();
@@ -48,6 +64,8 @@ public class OriginLock extends CordovaPlugin {
     private boolean isAllowed(String url) {
         if (url == null) return false;
         if (url.equals("about:blank")) return true;
+        // Bundled app content only (not arbitrary file paths)
+        if (url.startsWith("file:///android_asset/")) return true;
         Uri u;
         try { u = Uri.parse(url); } catch (Exception e) { return false; }
         if (u.getScheme() == null || u.getHost() == null) return false;
@@ -66,19 +84,22 @@ public class OriginLock extends CordovaPlugin {
     @Override
     public boolean onOverrideUrlLoading(String url) {
         if (!isAllowed(url)) {
-            Log.w(TAG, "Blocked navigation to: " + url);
-            return true; // handled -> WebView does not load it
+            Log.w(TAG, (reportOnly ? "WOULD BLOCK (report mode): " : "Blocked navigation to: ") + url);
+            notifyBlocked(url);
+            return !reportOnly; // handled -> WebView does not load it
         }
         return false;
     }
 
     @Override
     public Boolean shouldAllowNavigation(String url) {
+        if (reportOnly) { if (!isAllowed(url)) notifyBlocked(url); return Boolean.TRUE; }
         return isAllowed(url) ? Boolean.TRUE : Boolean.FALSE;
     }
 
     @Override
     public Boolean shouldOpenExternalUrl(String url) {
+        if (reportOnly) return null;
         return Boolean.FALSE; // never hand arbitrary URLs to other apps
     }
 }

@@ -9,6 +9,9 @@
   <preference name="ALLOWED_ORIGINS"
               default="https://localhost,http://localhost,ionic://localhost,app://localhost,https://ts11dev.outsystems.net"/>
 
+  <!-- "enforce" or "report" (log only, blocks nothing) -->
+  <preference name="MODE" default="enforce"/>
+
   <platform name="android">
     <config-file target="res/xml/config.xml" parent="/*">
       <feature name="OriginLock">
@@ -16,6 +19,7 @@
         <param name="onload" value="true"/>
       </feature>
       <preference name="OriginLockAllowed" value="$ALLOWED_ORIGINS"/>
+      <preference name="OriginLockMode" value="$MODE"/>
     </config-file>
     <source-file src="src/android/OriginLock.java" target-dir="src/com/mycompany/originlock"/>
     <hook type="after_prepare" src="hooks/harden-config.js"/>
@@ -28,6 +32,7 @@
         <param name="onload" value="true"/>
       </feature>
       <preference name="OriginLockAllowed" value="$ALLOWED_ORIGINS"/>
+      <preference name="OriginLockMode" value="$MODE"/>
     </config-file>
     <source-file src="src/ios/OriginLock.m"/>
     <hook type="after_prepare" src="hooks/harden-config.js"/>
