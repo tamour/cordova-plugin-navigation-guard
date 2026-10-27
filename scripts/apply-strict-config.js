@@ -2,24 +2,25 @@ module.exports = function(context) {
     var fs = require('fs');
     var path = require('path');
 
-    // The restricted domain allowed for this application
     var targetOrigin = "https://ts11dev.outsystems.net";
+    var appName = "TA_LocalStorage_DBScanner";
 
     function secureConfig(configPath) {
         if (!fs.existsSync(configPath)) {
+            console.log("WebView Lockdown: File not found -> " + configPath);
             return;
         }
         
-        console.log("Locking down WebView rules in: " + configPath);
+        console.log("WebView Lockdown: Securing " + configPath);
         var content = fs.readFileSync(configPath, 'utf8');
 
-        // 1. Strip out all existing permissive access, navigation, and intent tags
+        // 1. Strip out all existing permissive tags to ensure a clean slate
         content = content.replace(/<access[^>]*>/g, '');
         content = content.replace(/<allow-navigation[^>]*>/g, '');
         content = content.replace(/<allow-intent[^>]*>/g, '');
         content = content.replace(/<preference\s+name="UnsafeEvalUsage"[^>]*>/g, '');
 
-        // 2. Define the secure payload based on the vulnerability remediation
+        // 2. Define the secure payload
         var secureRules = `
     <!-- Restrict backend access -->
     <access origin="${targetOrigin}" />
@@ -39,26 +40,19 @@ module.exports = function(context) {
     <preference name="UnsafeEvalUsage" value="false" />
 </widget>`;
 
-        // 3. Inject the secured rules right before the closing </widget> tag
-        content = content.replace('</widget>', secureRules);
-
-        fs.writeFileSync(configPath, content);
+        // 3. Inject the secured rules before closing tag
+        if (content.indexOf('</widget>') !== -1) {
+            content = content.replace('</widget>', secureRules);
+            fs.writeFileSync(configPath, content);
+            console.log("WebView Lockdown: Successfully secured " + configPath);
+        }
     }
 
     // Target Android: <project_root>/platforms/android/app/src/main/res/xml/config.xml
     var androidConfig = path.join(context.opts.projectRoot, 'platforms', 'android', 'app', 'src', 'main', 'res', 'xml', 'config.xml');
     secureConfig(androidConfig);
 
-    // Target iOS: <project_root>/platforms/ios/<app_name>/config.xml
-    var iosPlatformDir = path.join(context.opts.projectRoot, 'platforms', 'ios');
-    if (fs.existsSync(iosPlatformDir)) {
-        var iosFiles = fs.readdirSync(iosPlatformDir);
-        iosFiles.forEach(function(folderName) {
-            var iosConfigPath = path.join(iosPlatformDir, folderName, 'config.xml');
-            // Check if the config.xml exists inside this subfolder (identifying the <app_name> directory)
-            if (fs.existsSync(iosConfigPath) && fs.statSync(path.join(iosPlatformDir, folderName)).isDirectory()) {
-                secureConfig(iosConfigPath);
-            }
-        });
-    }
+    // Target iOS: <project_root>/platforms/ios/TA_LocalStorage_DBScanner/config.xml
+    var iosConfigPath = path.join(context.opts.projectRoot, 'platforms', 'ios', appName, 'config.xml');
+    secureConfig(iosConfigPath);
 };
