@@ -1,31 +1,35 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="cordova-plugin-navigation-guard"
-        version="1.0.0">
-    <name>cordova-plugin-navigation-guard</name>
-    <description>Enforces native origin containment and URL filtering on Cordova WebViews</description>
-    <license>MIT</license>
-    <keywords>cordova,security,webview,navigation</keywords>
+<plugin id="cordova-plugin-navigation-guard" version="1.0.0"
+        xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        xmlns:android="http://schemas.android.com/apk/res/android">
+  <name>Navigation Guard</name>
+  <description>Enforces native origin containment and URL filtering on Cordova WebViews.</description>
 
-    <!-- Android -->
-    <platform name="android">
-        <config-file target="res/xml/config.xml" parent="/*">
-            <feature name="NavigationGuard">
-                <param name="android-package" value="com.security.guard.NavigationGuardPlugin"/>
-                <param name="onload" value="true" />
-            </feature>
-        </config-file>
-        <source-file src="src/android/NavigationGuardPlugin.java" target-dir="src/com/security/guard" />
-    </platform>
+  <!-- Comma-separated list of allowed origins (scheme://host[:port]) -->
+  <preference name="ALLOWED_ORIGINS"
+              default="https://localhost,http://localhost,ionic://localhost,app://localhost,https://ts11dev.outsystems.net"/>
 
-    <!-- iOS (Swift) -->
-    <platform name="ios">
-        <config-file target="config.xml" parent="/*">
-            <feature name="NavigationGuard">
-                <param name="ios-package" value="NavigationGuardPlugin" />
-                <param name="onload" value="true" />
-            </feature>
-        </config-file>
-        <source-file src="src/ios/NavigationGuardPlugin.swift" />
-    </platform>
+  <platform name="android">
+    <config-file target="res/xml/config.xml" parent="/*">
+      <feature name="OriginLock">
+        <param name="android-package" value="com.mycompany.originlock.OriginLock"/>
+        <param name="onload" value="true"/>
+      </feature>
+      <preference name="OriginLockAllowed" value="$ALLOWED_ORIGINS"/>
+    </config-file>
+    <source-file src="src/android/OriginLock.java" target-dir="src/com/mycompany/originlock"/>
+    <hook type="after_prepare" src="hooks/harden-config.js"/>
+  </platform>
+
+  <platform name="ios">
+    <config-file target="config.xml" parent="/*">
+      <feature name="OriginLock">
+        <param name="ios-package" value="OriginLock"/>
+        <param name="onload" value="true"/>
+      </feature>
+      <preference name="OriginLockAllowed" value="$ALLOWED_ORIGINS"/>
+    </config-file>
+    <source-file src="src/ios/OriginLock.m"/>
+    <hook type="after_prepare" src="hooks/harden-config.js"/>
+  </platform>
 </plugin>
