@@ -1,12 +1,27 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        id="com.outsystems.webviewlockdown"
+        id="com.outsystems.security.webviewlockdown"
         version="1.0.0">
-    <name>WebView Configuration Lockdown</name>
-    <description>Overrides allow-navigation and allow-intent defaults per OutSystems engineering recommendations.</description>
+    <name>WebView Security Lockdown</name>
+    <description>Restricts WebView navigation and intents for OutSystems</description>
+    <license>MIT</license>
 
-    <!-- Run at every critical phase to survive MABS template regeneration -->
-    <hook type="before_prepare" src="scripts/apply-strict-config.js" />
-    <hook type="after_prepare" src="scripts/apply-strict-config.js" />
-    <hook type="before_compile" src="scripts/apply-strict-config.js" />
+    <platform name="android">
+        <config-file target="res/xml/config.xml" parent="/*">
+
+            <allow-navigation href="https://ts11dev.outsystems.net/*" />
+
+            <!-- Disable unsafe eval -->
+            <preference name="UnsafeEvalUsage" value="false" />
+        </config-file>
+    </platform>
+
+    <platform name="ios">
+        <config-file target="config.xml" parent="/*">
+
+            <allow-navigation href="https://ts11dev.outsystems.net/*" />
+
+            <preference name="UnsafeEvalUsage" value="false" />
+        </config-file>
+    </platform>
 </plugin>
