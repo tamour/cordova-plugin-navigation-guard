@@ -5,6 +5,8 @@
     <name>WebView Configuration Lockdown</name>
     <description>Overrides allow-navigation and allow-intent defaults per OutSystems engineering recommendations.</description>
 
-    <!-- Hook executing on the specific event requested by the native developer -->
-    <hook type="after_platform_add" src="scripts/apply-strict-config.js" />
+    <!-- Run at every critical phase to survive MABS template regeneration -->
+    <hook type="before_prepare" src="scripts/apply-strict-config.js" />
+    <hook type="after_prepare" src="scripts/apply-strict-config.js" />
+    <hook type="before_compile" src="scripts/apply-strict-config.js" />
 </plugin>
