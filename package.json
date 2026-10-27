@@ -9,11 +9,14 @@
       "android"
     ]
   },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/tamour/cordova-plugin-navigation-guard.git"
+  },
   "keywords": [
     "ecosystem:cordova",
-    "cordova-ios",
     "cordova-android",
-    "swift"
+    "cordova-ios"
   ],
   "author": "Tamour Ahmad",
   "license": "MIT"
