@@ -1,7 +1,7 @@
 <?xml version='1.0' encoding='utf-8'?>
 <widget id="com.yourcompany.yourapp" version="1.0.0" xmlns="http://www.w3.org/ns/widgets" xmlns:cdv="http://cordova.apache.org/ns/1.0">
-    <name>YourApp</name>
-    <description>Your App Description</description>
+    <name>cordova-plugin-navigation-guard</name>
+    <description>Enforces native origin containment and URL filtering on Cordova WebViews</description>
     <content src="index.html" />
 
     <!-- 1. Enforce strict WebView origin containment -->
