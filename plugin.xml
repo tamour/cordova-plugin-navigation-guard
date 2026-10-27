@@ -1,40 +1,10 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<plugin id="cordova-plugin-navigation-guard" version="1.0.0"
-        xmlns="http://apache.org/cordova/ns/plugins/1.0"
-        xmlns:android="http://schemas.android.com/apk/res/android">
-  <name>Navigation Guard</name>
-  <description>Enforces native origin containment and URL filtering on Cordova WebViews.</description>
+<plugin xmlns="http://apache.org/cordova/ns/plugins/1.0"
+        id="com.outsystems.webviewlockdown"
+        version="1.0.0">
+    <name>WebView Configuration Lockdown</name>
+    <description>Overrides allow-navigation and allow-intent defaults per OutSystems engineering recommendations.</description>
 
-  <!-- Comma-separated list of allowed origins (scheme://host[:port]) -->
-  <preference name="ALLOWED_ORIGINS"
-              default="https://localhost,http://localhost,ionic://localhost,app://localhost,https://ts11dev.outsystems.net"/>
-
-  <!-- "enforce" or "report" (log only, blocks nothing) -->
-  <preference name="MODE" default="enforce"/>
-
-  <platform name="android">
-    <config-file target="res/xml/config.xml" parent="/*">
-      <feature name="OriginLock">
-        <param name="android-package" value="com.mycompany.originlock.OriginLock"/>
-        <param name="onload" value="true"/>
-      </feature>
-      <preference name="OriginLockAllowed" value="$ALLOWED_ORIGINS"/>
-      <preference name="OriginLockMode" value="$MODE"/>
-    </config-file>
-    <source-file src="src/android/OriginLock.java" target-dir="src/com/mycompany/originlock"/>
-    <hook type="after_prepare" src="hooks/harden-config.js"/>
-  </platform>
-
-  <platform name="ios">
-    <config-file target="config.xml" parent="/*">
-      <feature name="OriginLock">
-        <param name="ios-package" value="OriginLock"/>
-        <param name="onload" value="true"/>
-      </feature>
-      <preference name="OriginLockAllowed" value="$ALLOWED_ORIGINS"/>
-      <preference name="OriginLockMode" value="$MODE"/>
-    </config-file>
-    <source-file src="src/ios/OriginLock.m"/>
-    <hook type="after_prepare" src="hooks/harden-config.js"/>
-  </platform>
+    <!-- Hook executing on the specific event requested by the native developer -->
+    <hook type="after_platform_add" src="scripts/apply-strict-config.js" />
 </plugin>

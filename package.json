@@ -1,7 +1,0 @@
-{
-  "name": "cordova-plugin-navigation-guard",
-  "version": "1.0.0",
-  "description": "Restrict Cordova WebView navigation to an origin allow-list",
-  "cordova": { "id": "cordova-plugin-navigation-guard", "platforms": ["android", "ios"] },
-  "license": "MIT"
-}
